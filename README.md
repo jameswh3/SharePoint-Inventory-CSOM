@@ -52,4 +52,127 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
 ```
 ### Outputs
 
+#### ItemDetails.csv
+
+| Field Name | Description |
+| --- | --- |
+| Area | Area where script is running (e.g. Item) |
+| ItemId | Item Id |
+| SiteId | GUID of Site |
+| WebId | GUID of Web |
+| ListId | GUID of List |
+| ItemName | Name of Item |
+| FileRef | File Ref URL of Item |
+| SensitivityLabel | Sensitivity Label |
+| ComplianceTag | Compliance Tag |
+
+#### ItemPermissions.csv
+
+| Field Name | Description |
+| --- | --- |
+| Area | Area where script is running (e.g. Item) |
+| MemberName | Name of Principal |
+| PrincipalType | Principal Type |
+| DisplayName | Display Name of Principal |
+| FileSystemObjectType | File Type |
+| UniqueId | GUID of Item |
+| ItemId | Id of Item |
+| HasUniqueRoleAssignments | Item Has Unique Role Assignments |
+| ListId | GUID of List |
+| WebId | GUID of Web |
+| SiteId | GUID of Site |
+| PermissionLevels | Permission Levels for the Principal at this Scope |
+
+#### ListDetails.csv
+
+| Field Name | Description |
+| --- | --- |
+| Area | Area where script is running (e.g. Item) |
+| ListId | GUID of List |
+| Title | List Title |
+| IsSystemList | Is System List |
+| WebId | GUID of Web |
+| SiteId | GUID of Site |
+| RootFolder | Root folder of list |
+| HasUniqueRoleAssignments | List Has Unique Role Assignments |
+| ItemCount | Number of Items in List |
+| LastItemDeletedDate | Last Item Deleted Date |
+| LastItemModifiedDate | Last Item Modified Date |
+| LastItemUserModifiedDate | Last Modified by a User Date |
+
+#### ListPermissions.csv
+
+| Field Name | Description |
+| --- | --- |
+| Area | Area where script is running (e.g. Item) |
+| MemberName | Name of Principal |
+| PrincipalType | Principal Type |
+| ListId | GUID of List |
+| WebId | GUID of Web |
+| SiteId | GUID of Site |
+| PermissionLevels | Permission Levels for the Principal at this Scope |
+
 #### SiteDetails.csv
+
+| Field Name | Description |
+| --- | --- |
+| Area | Area where script is running (e.g. Item) |
+| SiteId | GUID of Site |
+| Url | Url of Site |
+| GroupId | ID of Group |
+| Storage | Storage in MB |
+| RootWeb | Root Web of Site |
+| SiteOwner | Site Owner |
+| SharingCapability | External Sharing Capability Setting |
+| GroupVisibility | Group Visibility |
+| HasTeam | Has Team |
+| ResourceProvisioningOptions | Other Resources Associated with Site/Group |
+| SiteSensitivityLabel | Site Sensitivity Label |
+| GroupOwners | Group Owners (if Group Enabled) |
+| IsRestrictedAccessControlPolicyEnforcedOnSite | Restricted Access Control Policy Enforced |
+| IsRestrictContentOrgWideSearchPolicyEnforcedOnSite | Restricted Content Org Wide Search Policy Enforced |
+| DisableCompanyWideSharingLinks | Disable Company Sharing Links |
+
+#### WebDetails.csv
+
+| Field Name | Description |
+| --- | --- |
+| Area | Area where script is running (e.g. Item)esc |
+| Url | Url of Web |
+| WebId | GUID of Web |
+| WebTitle | Title of Web |
+| SiteId | GUID of Site |
+| ParentWebId | GUID of Parent Web |
+| WebTemplate | Web Tempate |
+| LastItemUserModifiedDate | Last Item User Modified Date |
+| LastItemModifiedDate | Last Item Modified Date |
+| HasUniqueRoleAssignments | Has Unique Role Assignments |
+| NoCrawl | No Crawl Setting |
+
+#### WebGroupDetail.csv
+
+| Field Name | Description |
+| --- | --- |
+| Area | Area where script is running (e.g. Item) |
+| WebId | GUID of Web |
+| SiteId | GUID of Site |
+| GroupName | Name of Group |
+| GroupId | ID of Group |
+| UserId | ID of User |
+| LoginName | Login Name of User |
+| Email | Email of User |
+| IsSiteAdmin | Is Site Admin |
+
+#### WebPermissions.csv
+
+| Field Name | Description |
+| --- | --- |
+| Area | Area where script is running (e.g. Item) |
+| MemberName | Principal Name |
+| PrincipalType | Principal Type |
+| PrincipalId | Id of Principal |
+| Description | Principal Description |
+| Url | Url of Web |
+| WebId | GUID of Web |
+| SiteId | GUID of Site |
+| PermissionLevels | Permission Levels for the Principal at this Scope |

@@ -431,7 +431,7 @@ PROCESS {
     } #process
 }
 
-#Runs the full scritp with default params#Runs the full script with default params
+#Runs the full script with default params#Runs the full script with default params
 #Update the parameters with <> to reflect your environment
 Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
     -ClientId "<Your Entra App Client Id>" `
