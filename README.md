@@ -75,7 +75,7 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
 | PrincipalType | Principal Type |
 | DisplayName | Display Name of Principal |
 | FileSystemObjectType | File Type |
-| UniqueId | GUID of Item |
+| ItemUniqueId | GUID of Item |
 | ItemId | Id of Item |
 | HasUniqueRoleAssignments | Item Has Unique Role Assignments |
 | ListId | GUID of List |
