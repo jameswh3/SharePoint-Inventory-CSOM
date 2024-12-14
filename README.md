@@ -52,10 +52,10 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
 ```
 ### Outputs
 
-#### ItemDetails.csv
+#### ItemDetails
 
 | Field Name | Description |
-| --- | --- |
+| --- | ---|
 | Area | Area where script is running (e.g. Item) |
 | ItemId | Item Id |
 | SiteId | GUID of Site |
@@ -66,10 +66,10 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
 | SensitivityLabel | Sensitivity Label |
 | ComplianceTag | Compliance Tag |
 
-#### ItemPermissions.csv
+#### ItemPermissions
 
 | Field Name | Description |
-| --- | --- |
+| --- | ---|
 | Area | Area where script is running (e.g. Item) |
 | MemberName | Name of Principal |
 | PrincipalType | Principal Type |
@@ -83,13 +83,13 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
 | SiteId | GUID of Site |
 | PermissionLevels | Permission Levels for the Principal at this Scope |
 
-#### ListDetails.csv
+#### ListDetails
 
 | Field Name | Description |
-| --- | --- |
+| --- | ---|
 | Area | Area where script is running (e.g. Item) |
 | ListId | GUID of List |
-| Title | List Title |
+| ListTitle | List Title |
 | IsSystemList | Is System List |
 | WebId | GUID of Web |
 | SiteId | GUID of Site |
@@ -100,10 +100,10 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
 | LastItemModifiedDate | Last Item Modified Date |
 | LastItemUserModifiedDate | Last Modified by a User Date |
 
-#### ListPermissions.csv
+#### ListPermissions
 
 | Field Name | Description |
-| --- | --- |
+| --- | ---|
 | Area | Area where script is running (e.g. Item) |
 | MemberName | Name of Principal |
 | PrincipalType | Principal Type |
@@ -112,10 +112,10 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
 | SiteId | GUID of Site |
 | PermissionLevels | Permission Levels for the Principal at this Scope |
 
-#### SiteDetails.csv
+#### SiteDetails
 
 | Field Name | Description |
-| --- | --- |
+| --- | ---|
 | Area | Area where script is running (e.g. Item) |
 | SiteId | GUID of Site |
 | Url | Url of Site |
@@ -133,10 +133,10 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
 | IsRestrictContentOrgWideSearchPolicyEnforcedOnSite | Restricted Content Org Wide Search Policy Enforced |
 | DisableCompanyWideSharingLinks | Disable Company Sharing Links |
 
-#### WebDetails.csv
+#### WebDetails
 
 | Field Name | Description |
-| --- | --- |
+| --- | ---|
 | Area | Area where script is running (e.g. Item)esc |
 | Url | Url of Web |
 | WebId | GUID of Web |
@@ -148,31 +148,30 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
 | LastItemModifiedDate | Last Item Modified Date |
 | HasUniqueRoleAssignments | Has Unique Role Assignments |
 | NoCrawl | No Crawl Setting |
-
-#### WebGroupDetail.csv
+#### WebGroupDetail
 
 | Field Name | Description |
-| --- | --- |
+| --- | ---|
 | Area | Area where script is running (e.g. Item) |
 | WebId | GUID of Web |
 | SiteId | GUID of Site |
 | GroupName | Name of Group |
-| GroupId | ID of Group |
+| GroupId | GUID of Group |
 | UserId | ID of User |
 | LoginName | Login Name of User |
 | Email | Email of User |
 | IsSiteAdmin | Is Site Admin |
+| UserPrincipalType | Principal Type of User |
 
-#### WebPermissions.csv
+#### WebPermissions
 
 | Field Name | Description |
-| --- | --- |
+| --- | ---|
 | Area | Area where script is running (e.g. Item) |
 | MemberName | Principal Name |
-| PrincipalType | Principal Type |
+| MemberPrincipalType | Principal Type |
+| MemberDescription | Description of Member |
 | PrincipalId | Id of Principal |
-| Description | Principal Description |
-| Url | Url of Web |
 | WebId | GUID of Web |
 | SiteId | GUID of Site |
 | PermissionLevels | Permission Levels for the Principal at this Scope |
