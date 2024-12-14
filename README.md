@@ -4,7 +4,10 @@ This script is provided as a way to inventory SharePoint Sites, Webs, Lists, and
 
 # Script Reference
 
-<table><tbody><tr><td>Script</td><td>Description</td><td>Permissions Required</td><td>Dependencies</td></tr><tr><td>Get-SPODetails.ps1</td><td>Iterates through Site Collections, Webs, Lists, and Items to gather inventory information at each level</td><td><a href="https://github.com/jameswh3/SharePoint-Inventory-CSOM/tree/main?tab=readme-ov-file#permissions-required">Details</a></td><td>PnP PowerShell</td></tr></tbody></table>
+| Script | Description | Permissions Required | Dependencies | 
+| --- | --- | --- | --- |
+| Get-SPODetails.ps1 | Iterates through Site Collections, Webs, Lists, and Items to gather information at each level | [Details](https://github.com/jameswh3/SharePoint-Inventory-CSOM/tree/main?tab=readme-ov-file#permissions-required) | PnP PowerShell
+
 
 # PowerShell Requirements
 
