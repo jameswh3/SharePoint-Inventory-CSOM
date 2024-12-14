@@ -339,7 +339,7 @@ Function Get-SPOSiteDetails {
     PROCESS {
         $SPOSite=Get-PnPSite -Includes Id,Owner,SecondaryContact,Usage,DisableCompanyWideSharingLinks,RootWeb.Url,GroupId,SensitivityLabel,IsRestrictContentOrgWideSearchPolicyEnforcedOnSite,IsRestrictedAccessControlPolicyEnforcedOnSite
         $SiteId=$SPOSite.Id
-        if ($SPOSite.GroupId -ne "") {
+        if ($SPOSite.GroupId -ne "00000000-0000-0000-0000-000000000000" -and $SPOSite.GroupId -ne "") {
             $group=Get-PnPMicrosoft365Group -Identity $SPOSite.GroupId -IncludeOwners
         }
         $SiteDatum = New-Object PSObject
@@ -352,6 +352,8 @@ Function Get-SPOSiteDetails {
         $SiteDatum | Add-Member NoteProperty SiteOwner($SPOSite.Owner.LoginName -replace "i:0#\.f\|membership\|", "")
         $SiteDatum | Add-Member NoteProperty SharingCapability($SharingCapability)
         $SiteDatum | Add-Member NoteProperty GroupVisibility($group.Visibility)
+        $SiteDatum | Add-Member NoteProperty HasTeam($group.HasTeam)
+        $SiteDatum | Add-Member NoteProperty ResourceProvisioningOptions($group.ResourceProvisioningOptions -join ",")
         $SiteDatum | Add-Member NoteProperty SiteSensitivityLabel($SPOSite.SensitivityLabel.Name)
         $SiteDatum | Add-Member NoteProperty GroupOwners(($group.Owners.UserPrincipalName -join ",") -replace "i:0#\.f\|membership\|", "")
         $SiteDatum | Add-Member NoteProperty IsRestrictedAccessControlPolicyEnforcedOnSite($IsRestrictedAccessControlPolicyEnforcedOnSite)
@@ -429,12 +431,13 @@ PROCESS {
     } #process
 }
 
-#Runs the full scritp with default params
-Get-SPODetails -ReportOutputPath "c:\temp\" `
+#Runs the full scritp with default params#Runs the full script with default params
+#Update the parameters with <> to reflect your environment
+Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
     -ClientId "<Your Entra App Client Id>" `
-    -CertificatePath "<Path to your PFX file>" `
-    -Tenant "<Your tenant id>.onmicrosoft.com" `
-    -SPOAdminUrl "https://<Your tenant id>-admin.sharepoint.com" `
+    -CertificatePath "<Path to your pfx file>" `
+    -Tenant "<Your Tenant Name>.onmicrosoft.com" `
+    -SPOAdminUrl "https://<Your Tenant Name>-admin.sharepoint.com" `
     -GetWebDetails `
     -GetWebPermissions `
     -GetListDetails `

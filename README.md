@@ -47,3 +47,6 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
     -GetItemDetails `
     -ClearPriorLogs
 ```
+### Outputs
+
+#### SiteDetails.csv
