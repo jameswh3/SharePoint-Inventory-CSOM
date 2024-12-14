@@ -418,10 +418,10 @@ PROCESS {
 }
 #Runs the full scritp with default params
 Get-SPODetails -ReportOutputPath "c:\temp\" `
-    -ClientId "a3962d50-dfab-4c27-91d1-9f7660d59d7d" `
-    -CertificatePath "c:\mycertificates\PnP PowerShell App Only 2.pfx" `
-    -Tenant "m365cpi89108028.onmicrosoft.com" `
-    -SPOAdminUrl "https://m365cpi89108028-admin.sharepoint.com" `
+    -ClientId "<Your Entra App Client Id>" `
+    -CertificatePath "<Path to your PFX file>" `
+    -Tenant "<Your tenant id>.onmicrosoft.com" `
+    -SPOAdminUrl "https://<Your tenant id>-admin.sharepoint.com" `
     -GetWebDetails `
     -GetWebPermissions `
     -GetListDetails `
