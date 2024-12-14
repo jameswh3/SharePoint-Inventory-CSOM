@@ -30,7 +30,7 @@ Iterates through Site Collections, Webs, Lists, and Items to gather inventory in
 
 Before executing, update the lines below with your environment's parameters
 
-```
+``` PowerShell
 #Runs the full script with default params
 #Update the parameters with <> to reflect your environment
 Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
