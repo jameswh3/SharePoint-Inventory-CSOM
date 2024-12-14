@@ -126,7 +126,7 @@ Function Get-SPOItemPermissionDetails {
             $Permissions | Add-Member NoteProperty Area($Area)
             $Permissions | Add-Member NoteProperty MemberName($RoleAssignment.Member.Title)
             $Permissions | Add-Member NoteProperty PrincipalType($RoleAssignment.Member.PrincipalType)
-            $Permissions | Add-Member NoteProperty DisplayName($RoleAssignment.Member.DisplayName)
+            $Permissions | Add-Member NoteProperty LoginName($RoleAssignment.Member.LoginName)
             $Permissions | Add-Member NoteProperty FileSystemObjectType($Item.FileSystemObjectType)
             $Permissions | Add-Member NoteProperty ItemUniqueId($Item.FieldValues.UniqueId)
             $Permissions | Add-Member NoteProperty ItemId($Item.Id)

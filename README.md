@@ -73,7 +73,7 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
 | Area | Area where script is running (e.g. Item) |
 | MemberName | Name of Principal |
 | PrincipalType | Principal Type |
-| DisplayName | Display Name of Principal |
+| LoginName | Login Name of Principal |
 | FileSystemObjectType | File Type |
 | ItemUniqueId | GUID of Item |
 | ItemId | Id of Item |
