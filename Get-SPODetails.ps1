@@ -20,6 +20,7 @@ Function Get-SPOWebPermissionDetails {
             $Permissions | Add-Member NoteProperty MemberName($RoleAssignment.Member.Title)
             $Permissions | Add-Member NoteProperty PrincipalType($RoleAssignment.Member.PrincipalType)
             $Permissions | Add-Member NoteProperty PrincipalId($RoleAssignment.PrincipalId)
+            $Permissions | Add-Member NoteProperty Description($RoleAssignment.Member.Description)
             $Permissions | Add-Member NoteProperty Url($Web.Url)
             $Permissions | Add-Member NoteProperty WebId($Web.Id)
             $Permissions | Add-Member NoteProperty SiteId($SiteId)
@@ -59,7 +60,7 @@ Function Get-SPOGroupMembers {
             $userGroupDatum | Add-Member NoteProperty GroupName($Principal.Title)
             $userGroupDatum | Add-Member NoteProperty GroupId($Principal.Id)
             $userGroupDatum | Add-Member NoteProperty UserId($user.Id)
-            $userGroupDatum | Add-Member NoteProperty LoginName($user.LoginName)
+            $userGroupDatum | Add-Member NoteProperty LoginName($user.LoginName -replace "i:0#\.f\|membership\|", "")
             $userGroupDatum | Add-Member NoteProperty Email($user.Email)
             $userGroupDatum | Add-Member NoteProperty IsSiteAdmin($user.IsSiteAdmin)
             $UseGroupData += $userGroupDatum
@@ -128,7 +129,7 @@ Function Get-SPOItemPermissionDetails {
             $Permissions | Add-Member NoteProperty DisplayName($Item.DisplayName)
             $Permissions | Add-Member NoteProperty FileSystemObjectType($Item.FileSystemObjectType)
             $Permissions | Add-Member NoteProperty UniqueId($Item.FieldValues.UniqueId)
-            $Permissions | Add-Member NoteProperty Id($Item.Id)
+            $Permissions | Add-Member NoteProperty ItemId($Item.Id)
             $Permissions | Add-Member NoteProperty HasUniqueRoleAssignments($Item.HasUniqueRoleAssignments)
             $Permissions | Add-Member NoteProperty ListId($ListId)
             $Permissions | Add-Member NoteProperty WebId($WebId)
@@ -157,7 +158,7 @@ Function Get-SPOWebDetails {
         $WebData = @()
         $Area="Web"
         $ReportOutput=($ReportOutputPath + "\"+$Area+"Details.csv")
-        Get-PnPProperty -ClientObject $Web -Property ParentWeb,WebTemplate,LastItemModifiedDate,LastItemUserModifiedDate,Title,HasUniqueRoleAssignments
+        Get-PnPProperty -ClientObject $Web -Property ParentWeb,WebTemplate,LastItemModifiedDate,LastItemUserModifiedDate,Title,HasUniqueRoleAssignments,NoCrawl
     } #begin
     PROCESS {
         Write-Host "--Processing Web: $($Web.Url)"
@@ -172,6 +173,7 @@ Function Get-SPOWebDetails {
         $WebDatum | Add-Member NoteProperty LastItemUserModifiedDate($Web.LastItemModifiedDate)
         $WebDatum | Add-Member NoteProperty LastItemModifiedDate($Web.LastItemUserModifiedDate)
         $WebDatum | Add-Member NoteProperty HasUniqueRoleAssignments($Web.HasUniqueRoleAssignments)
+        $WebDatum | Add-Member NoteProperty NoCrawl($Web.NoCrawl)
         $WebData += $WebDatum
         If ($GetWebPermissions) {
             Get-SPOWebPermissionDetails -Web $web `
@@ -231,7 +233,7 @@ Function Get-SPOListDetails {
         Write-Host "----Processing List: $($List.Title)"
         $ListDatum = New-Object PSObject
         $ListDatum | Add-Member NoteProperty Area($Area)
-        $ListDatum | Add-Member NoteProperty Id($List.Id)
+        $ListDatum | Add-Member NoteProperty ListId($List.Id)
         $ListDatum | Add-Member NoteProperty Title($List.Title)
         $ListDatum | Add-Member NoteProperty IsSystemList($List.IsSystemList)
         $ListDatum | Add-Member NoteProperty WebId($WebId)
@@ -264,12 +266,10 @@ Function Get-SPOListDetails {
             } #foreach item in listitems
         } #if getitempermissions or getitemdetails
     } #process
-
     END {
         $ListData | Export-Csv -Path $ReportOutput -NoTypeInformation -Append
     } #end
 } #get-spolistdetails
-
 Function Get-SPOItemDetails {
     param(
         [Microsoft.SharePoint.Client.ListItem]$item,
@@ -295,6 +295,7 @@ Function Get-SPOItemDetails {
         $ItemDatum | Add-Member NoteProperty ItemName($Item.DisplayName)
         $ItemDatum | Add-Member NoteProperty FileRef($item.FieldValues["FileRef"])
         $ItemDatum | Add-Member NoteProperty SensitivityLabel($Item.FieldValues["_DisplayName"])
+        $ItemDatum | Add-Member NoteProperty ComplianceTag($Item.FieldValues["_ComplianceTag"])
         $ItemData += $ItemDatum
     }
     END {
@@ -311,6 +312,7 @@ Function Get-SPOItemDetails {
 Function Get-SPOSiteDetails {
     param (
         $SiteUrl,
+        $SharingCapability,
         $ClientId,
         $Tenant,
         $CertificatePath,
@@ -335,18 +337,27 @@ Function Get-SPOSiteDetails {
         $Webs += Get-PnPWeb
     } #begin
     PROCESS {
-        $SPOSite=Get-PnPSite -Includes Id,Owner,SecondaryContact,Usage
+        $SPOSite=Get-PnPSite -Includes Id,Owner,SecondaryContact,Usage,DisableCompanyWideSharingLinks,RootWeb.Url,GroupId,SensitivityLabel,IsRestrictContentOrgWideSearchPolicyEnforcedOnSite,IsRestrictedAccessControlPolicyEnforcedOnSite
         $SiteId=$SPOSite.Id
+        if ($SPOSite.GroupId -ne "") {
+            $group=Get-PnPMicrosoft365Group -Identity $SPOSite.GroupId -IncludeOwners
+        }
         $SiteDatum = New-Object PSObject
         $SiteDatum | Add-Member NoteProperty Area($Area)
-        $SiteDatum | Add-Member NoteProperty Url($SiteUrl)
         $SiteDatum | Add-Member NoteProperty SiteId($SiteId)
+        $SiteDatum | Add-Member NoteProperty Url($SiteUrl)
+        $SiteDatum | Add-Member NoteProperty GroupId($SPOSite.GroupId)
         $SiteDatum | Add-Member NoteProperty Storage($SPOSite.Usage.Storage)
-        $SiteDatum | Add-Member NoteProperty RootWeb($SPOSite.RootWeb)
-        $SiteDatum | Add-Member NoteProperty Owner($SPOSite.Owner.Email)
-        $SiteDatum | Add-Member NoteProperty SecondaryContact($SPOSite.SecondaryContact.Email)
+        $SiteDatum | Add-Member NoteProperty RootWeb($SPOSite.RootWeb.Url)
+        $SiteDatum | Add-Member NoteProperty SiteOwner($SPOSite.Owner.LoginName -replace "i:0#\.f\|membership\|", "")
+        $SiteDatum | Add-Member NoteProperty SharingCapability($SharingCapability)
+        $SiteDatum | Add-Member NoteProperty GroupVisibility($group.Visibility)
+        $SiteDatum | Add-Member NoteProperty SiteSensitivityLabel($SPOSite.SensitivityLabel.Name)
+        $SiteDatum | Add-Member NoteProperty GroupOwners(($group.Owners.UserPrincipalName -join ",") -replace "i:0#\.f\|membership\|", "")
+        $SiteDatum | Add-Member NoteProperty IsRestrictedAccessControlPolicyEnforcedOnSite($IsRestrictedAccessControlPolicyEnforcedOnSite)
+        $SiteDatum | Add-Member NoteProperty IsRestrictContentOrgWideSearchPolicyEnforcedOnSite($IsRestrictContentOrgWideSearchPolicyEnforcedOnSite)
+        $SiteDatum | Add-Member NoteProperty DisableCompanyWideSharingLinks($DisableCompanyWideSharingLinks)
         $SiteData += $SiteDatum
-
         if ($GetWebPermissions -or 
             $GetListPermissions -or 
             $GetItemPermissions -or
@@ -396,12 +407,13 @@ Function get-SPODetails {
             -ClientId $ClientId `
             -Tenant $Tenant `
             -CertificatePath $CertificatePath
-        $SPOSites=Get-PnPTenantSite "https://m365cpi89108028.sharepoint.com/sites/InvestorRelations"
+        $SPOSites=Get-PnPTenantSite
     } #begin
 PROCESS {
     foreach ($SPOSite in $SPOSites) {
             Write-Host "Processing Site: $($SPOSite.Url)"
             Get-SPOSiteDetails -SiteUrl "$($SPOSite.Url)" `
+                -SharingCapability $SPOSite.SharingCapability `
                 -ClientId $ClientId `
                 -Tenant $Tenant `
                 -CertificatePath $CertificatePath `
@@ -416,6 +428,7 @@ PROCESS {
         } #foreach sposite
     } #process
 }
+
 #Runs the full scritp with default params
 Get-SPODetails -ReportOutputPath "c:\temp\" `
     -ClientId "<Your Entra App Client Id>" `
