@@ -72,8 +72,9 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
 | --- | ---|
 | Area | Area where script is running (e.g. Item) |
 | MemberName | Name of Principal |
-| PrincipalType | Principal Type |
-| LoginName | Login Name of Principal |
+| MemberPrincipalType | Principal Type |
+| MemberLoginName | Login Name of Principal |
+| MemberEmail | Email of Principal |
 | FileSystemObjectType | File Type |
 | ItemUniqueId | GUID of Item |
 | ItemId | Id of Item |
@@ -122,7 +123,8 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
 | GroupId | ID of Group |
 | Storage | Storage in MB |
 | RootWeb | Root Web of Site |
-| SiteOwner | Site Owner |
+| SiteOwnerLoginName | Site Owner Login Name |
+| SiteOwnerTitle | Site Owner Title |
 | SharingCapability | External Sharing Capability Setting |
 | GroupVisibility | Group Visibility |
 | HasTeam | Has Team |
@@ -132,6 +134,7 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
 | IsRestrictedAccessControlPolicyEnforcedOnSite | Restricted Access Control Policy Enforced |
 | IsRestrictContentOrgWideSearchPolicyEnforcedOnSite | Restricted Content Org Wide Search Policy Enforced |
 | DisableCompanyWideSharingLinks | Disable Company Sharing Links |
+
 
 #### WebDetails
 
@@ -148,6 +151,7 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
 | LastItemModifiedDate | Last Item Modified Date |
 | HasUniqueRoleAssignments | Has Unique Role Assignments |
 | NoCrawl | No Crawl Setting |
+
 #### WebGroupDetail
 
 | Field Name | Description |
@@ -159,6 +163,7 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
 | GroupId | GUID of Group |
 | UserId | ID of User |
 | LoginName | Login Name of User |
+| UserTitle | Title of User |
 | Email | Email of User |
 | IsSiteAdmin | Is Site Admin |
 | UserPrincipalType | Principal Type of User |
@@ -168,10 +173,13 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
 | Field Name | Description |
 | --- | ---|
 | Area | Area where script is running (e.g. Item) |
-| MemberName | Principal Name |
+| MemberTitle | Principal Title |
 | MemberPrincipalType | Principal Type |
 | MemberDescription | Description of Member |
+| MemberLoginName | Login Name of Member |
 | PrincipalId | Id of Principal |
 | WebId | GUID of Web |
 | SiteId | GUID of Site |
 | PermissionLevels | Permission Levels for the Principal at this Scope |
+
+

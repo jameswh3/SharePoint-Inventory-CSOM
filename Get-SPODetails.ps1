@@ -22,8 +22,9 @@ Function Get-SPOItemPermissionDetails {
             $Permissions = New-Object PSObject
             $Permissions | Add-Member NoteProperty Area($Area)
             $Permissions | Add-Member NoteProperty MemberName($RoleAssignment.Member.Title)
-            $Permissions | Add-Member NoteProperty PrincipalType($RoleAssignment.Member.PrincipalType)
-            $Permissions | Add-Member NoteProperty LoginName($RoleAssignment.Member.LoginName)
+            $Permissions | Add-Member NoteProperty MemberPrincipalType($RoleAssignment.Member.PrincipalType)
+            $Permissions | Add-Member NoteProperty MemberLoginName($RoleAssignment.Member.LoginName)
+            $Permissions | Add-Member NoteProperty MemberEmail($RoleAssignment.Member.Email)
             $Permissions | Add-Member NoteProperty FileSystemObjectType($Item.FileSystemObjectType)
             $Permissions | Add-Member NoteProperty ItemUniqueId($Item.FieldValues.UniqueId)
             $Permissions | Add-Member NoteProperty ItemId($Item.Id)
@@ -191,6 +192,7 @@ Function Get-SPOGroupMembers {
             $userGroupDatum | Add-Member NoteProperty GroupId($Principal.Id)
             $userGroupDatum | Add-Member NoteProperty UserId($user.Id)
             $userGroupDatum | Add-Member NoteProperty LoginName($user.LoginName -replace "i:0#\.f\|membership\|", "")
+            $userGroupDatum | Add-Member NoteProperty UserTitle($user.Title)
             $userGroupDatum | Add-Member NoteProperty Email($user.Email)
             $userGroupDatum | Add-Member NoteProperty IsSiteAdmin($user.IsSiteAdmin)
             $userGroupDatum | Add-Member NoteProperty UserPrincipalType($user.PrincipalType)
@@ -219,9 +221,10 @@ Function Get-SPOWebPermissionDetails {
             Get-PnPProperty -ClientObject $RoleAssignment -Property RoleDefinitionBindings, Member
             $Permissions = New-Object PSObject
             $Permissions | Add-Member NoteProperty Area($Area)           
-            $Permissions | Add-Member NoteProperty MemberName($RoleAssignment.Member.Title)
+            $Permissions | Add-Member NoteProperty MemberTitle($RoleAssignment.Member.Title)
             $Permissions | Add-Member NoteProperty MemberPrincipalType($RoleAssignment.Member.PrincipalType)
             $Permissions | Add-Member NoteProperty MemberDescription($RoleAssignment.Member.Description)
+            $Permissions | Add-Member NoteProperty MemberLoginName($RoleAssignment.Member.LoginName)
             $Permissions | Add-Member NoteProperty PrincipalId($RoleAssignment.PrincipalId)
             $Permissions | Add-Member NoteProperty WebId($Web.Id)
             $Permissions | Add-Member NoteProperty SiteId($SiteId)
@@ -351,7 +354,9 @@ Function Get-SPOSiteDetails {
         $SiteDatum | Add-Member NoteProperty GroupId($SPOSite.GroupId)
         $SiteDatum | Add-Member NoteProperty Storage($SPOSite.Usage.Storage)
         $SiteDatum | Add-Member NoteProperty RootWeb($SPOSite.RootWeb.Url)
-        $SiteDatum | Add-Member NoteProperty SiteOwner($SPOSite.Owner.LoginName -replace "i:0#\.f\|membership\|", "")
+        $SiteDatum | Add-Member NoteProperty SiteOwnerLoginName($SPOSite.Owner.LoginName -replace "i:0#\.f\|membership\|", "")
+        $SiteDatum | Add-Member NoteProperty SiteOwnerTitle($SPOSite.Owner.Title)
+        $SiteDatum | Add-Member NoteProperty SiteOwnerEmail($SPOSite.Owner.Email)
         $SiteDatum | Add-Member NoteProperty SharingCapability($SharingCapability)
         $SiteDatum | Add-Member NoteProperty GroupVisibility($group.Visibility)
         $SiteDatum | Add-Member NoteProperty HasTeam($group.HasTeam)
@@ -436,8 +441,8 @@ PROCESS {
 #Runs the full script with default params#Runs the full script with default params
 #Update the parameters with <> to reflect your environment
 Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
-    -ClientId "<Your Entra App Client Id>" `
-    -CertificatePath "<Path to your Certificate pfx file>" `
+    -ClientId "<Your Entra App Id>" `
+    -CertificatePath "<Path to Your Certificate>" `
     -Tenant "<Your tenant name>.onmicrosoft.com" `
     -SPOAdminUrl "https://<Your tenant name>-admin.sharepoint.com" `
     -GetWebDetails `
@@ -448,3 +453,6 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
     -GetItemPermissions `
     -GetItemDetails `
     -ClearPriorLogs
+
+
+    
