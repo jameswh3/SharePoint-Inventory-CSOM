@@ -13,7 +13,7 @@ This script is provided as a way to inventory SharePoint Sites, Webs, Lists, and
 
 *   [Windows PowerShell 7.0 or higher](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.4)
 *   [PnP.PowerShell module 2.99.74 or higher](https://pnp.github.io/powershell/articles/installation.html)
-*   [Entra ID Application Registered to use with PnP PowerShell]((https://pnp.github.io/powershell/articles/registerapplication))
+*   [Entra ID Application Registered to use with PnP PowerShell](https://pnp.github.io/powershell/articles/registerapplication)
 
 # Script Details
 
