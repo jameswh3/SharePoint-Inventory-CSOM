@@ -2,6 +2,7 @@
 #Requires -Modules @{ModuleName="PnP.PowerShell"; ModuleVersion="2.99.57"}
 
 Function Get-SPOItemPermissionDetails {
+    [CmdletBinding()]
     param(
         [Parameter(Mandatory=$true)][Microsoft.SharePoint.Client.ListItem]$Item,
         $ReportOutputPath,
@@ -14,7 +15,7 @@ Function Get-SPOItemPermissionDetails {
         $PermissionData = @()
         $Area="Item"
         $ReportOutput=($ReportOutputPath + "\"+$Area+"Permissions.csv")
-        Write-Host "--------Processing Item Permissions: $($Item.DisplayName)"
+        Write-Host "$(Get-Date) --------Processing Item Permissions: $($Item.DisplayName)"
     }
     PROCESS {
         Foreach ($RoleAssignment in ($Item).RoleAssignments) {
@@ -41,6 +42,7 @@ Function Get-SPOItemPermissionDetails {
     }
 }
 Function Get-SPOItemDetails {
+    [CmdletBinding()]
     param(
         [Microsoft.SharePoint.Client.ListItem]$item,
         $WebId,
@@ -55,7 +57,7 @@ Function Get-SPOItemDetails {
         Get-PnPProperty -ClientObject $item -Property HasUniqueRoleAssignments | out-null #suppressing output b/c this returns
     }
     PROCESS {
-        Write-Host "------Processing Item: $($Item.DisplayName)"
+        Write-Host "$(Get-Date) ------Processing Item: $($Item.DisplayName)"
         $ItemDatum = New-Object PSObject
         $ItemDatum | Add-Member NoteProperty Area($Area)
         $ItemDatum | Add-Member NoteProperty ItemId($Item.Id)
@@ -80,6 +82,7 @@ Function Get-SPOItemDetails {
     }
 }
 Function Get-SPOListPermissionDetails {
+    [CmdletBinding()]
     param(
         [Parameter(Mandatory=$true)][Microsoft.SharePoint.Client.List]$List,
         $ReportOutputPath,
@@ -88,7 +91,7 @@ Function Get-SPOListPermissionDetails {
         [Switch]$GetItemPermissions
     )
     BEGIN {
-        Write-Host "------Processing List Permissions - $($List.Title)"
+        Write-Host "$(Get-Date) ------Processing List Permissions - $($List.Title)"
         Get-PnPProperty -ClientObject $List -Property RoleAssignments,HasUniqueRoleAssignments,DefaultViewUrl
         $PermissionData = @()
         $Area="List"
@@ -113,6 +116,7 @@ Function Get-SPOListPermissionDetails {
     }
 }
 Function Get-SPOListDetails {
+    [CmdletBinding()]
     param (
         [Parameter(Mandatory=$true)][Microsoft.SharePoint.Client.List]$List,
         $ReportOutputPath,
@@ -129,7 +133,7 @@ Function Get-SPOListDetails {
         Get-PnPProperty -ClientObject $List -Property HasUniqueRoleAssignments,DefaultViewUrl,IsSystemList
     } #begin
     PROCESS {
-        Write-Host "----Processing List: $($List.Title)"
+        Write-Host "$(Get-Date) ----Processing List: $($List.Title)"
         $ListDatum = New-Object PSObject
         $ListDatum | Add-Member NoteProperty Area($Area)
         $ListDatum | Add-Member NoteProperty ListId($List.Id)
@@ -170,6 +174,7 @@ Function Get-SPOListDetails {
     } #end
 } #get-spolistdetails
 Function Get-SPOGroupMembers {
+    [CmdletBinding()]
     param (
         [Parameter(Mandatory=$true)][Microsoft.SharePoint.Client.Principal]$Principal,
         $ReportOutputPath,
@@ -205,6 +210,7 @@ Function Get-SPOGroupMembers {
     }
 }
 Function Get-SPOWebPermissionDetails {
+    [CmdletBinding()]
     param(
         [Parameter(Mandatory=$true)][Microsoft.SharePoint.Client.Web]$Web,
         $ReportOutputPath,
@@ -243,6 +249,7 @@ Function Get-SPOWebPermissionDetails {
     } #End
 }
 Function Get-SPOWebDetails {
+    [CmdletBinding()]
     param (
         [Parameter(Mandatory=$true)][Microsoft.SharePoint.Client.Web]$Web,
         $ReportOutputPath,
@@ -261,7 +268,7 @@ Function Get-SPOWebDetails {
         Get-PnPProperty -ClientObject $Web -Property ParentWeb,WebTemplate,LastItemModifiedDate,LastItemUserModifiedDate,Title,HasUniqueRoleAssignments,NoCrawl
     } #begin
     PROCESS {
-        Write-Host "--Processing Web: $($Web.Url)"
+        Write-Host "$(Get-Date) --Processing Web: $($Web.Url)"
         $WebDatum = New-Object PSObject
         $WebDatum | Add-Member NoteProperty Area($Area)
         $WebDatum | Add-Member NoteProperty Url($Web.Url)
@@ -315,6 +322,7 @@ Function Get-SPOWebDetails {
 } #Get-SPOWebDetails
 
 Function Get-SPOSiteDetails {
+    [CmdletBinding()]
     param (
         $SiteUrl,
         $SharingCapability,
@@ -351,7 +359,7 @@ Function Get-SPOSiteDetails {
         $SiteDatum | Add-Member NoteProperty Area($Area)
         $SiteDatum | Add-Member NoteProperty SiteId($SiteId)
         $SiteDatum | Add-Member NoteProperty Url($SiteUrl)
-        $SiteDatum | Add-Member NoteProperty GroupId($SPOSite.GroupId)
+        $SiteDatum | Add-Member NoteProperty GroupId($SPOSite.GroupId -replace "00000000-0000-0000-0000-0000000000000","")
         $SiteDatum | Add-Member NoteProperty Storage($SPOSite.Usage.Storage)
         $SiteDatum | Add-Member NoteProperty RootWeb($SPOSite.RootWeb.Url)
         $SiteDatum | Add-Member NoteProperty SiteOwnerLoginName($SPOSite.Owner.LoginName -replace "i:0#\.f\|membership\|", "")
@@ -391,19 +399,23 @@ Function Get-SPOSiteDetails {
         Disconnect-PnPOnline
     } #end
 }
-Function get-SPODetails {
+Function Get-SPODetails {
+    [CmdletBinding()]
     Param(
         $ReportOutputPath,
         $ClientId, #App Only Registration
         $CertificatePath, #App Only Registration
         $Tenant,
         $SPOAdminUrl,
-        [Switch]$GetListPermissions,
-        [Switch]$GetItemPermissions,
+        $SiteList, #list of URLs to check; if populated, the script will only check those URLs
+        [switch]$IncludeOneDriveSites,
+        [switch]$GetWebDetails,
+        [switch]$GetWebPermissions,
         [switch]$GetListDetails,
         [switch]$IncludeSystemLists,
+        [Switch]$GetListPermissions,
+        [Switch]$GetItemPermissions,
         [switch]$GetItemDetails,
-        [switch]$GetWebPermissions,
         [switch]$ClearPriorLogs
     )
     BEGIN {
@@ -412,15 +424,25 @@ Function get-SPODetails {
             Remove-Item "$ReportOutputPath\*.csv"
             Clear-Host
         }
+        #connect to pnp online via the admin url
         Connect-PnPOnline -Url $SPOAdminUrl `
             -ClientId $ClientId `
             -Tenant $Tenant `
             -CertificatePath $CertificatePath
-        $SPOSites=Get-PnPTenantSite
+        if ($sitelist) {
+            $SPOSites=@()
+            foreach ($s in $SiteList) {
+                $SPOSites+=get-pnptenantsite -Identity $s
+
+            }
+        } #if sitelist is populated
+        else {
+            $SPOSites=Get-PnPTenantSite -IncludeOneDriveSites:$IncludeOneDriveSites
+        } #else get all sites
     } #begin
 PROCESS {
     foreach ($SPOSite in $SPOSites) {
-            Write-Host "Processing Site: $($SPOSite.Url)"
+            Write-Host "$(Get-Date) Processing Site: $($SPOSite.Url)"
             Get-SPOSiteDetails -SiteUrl "$($SPOSite.Url)" `
                 -SharingCapability $SPOSite.SharingCapability `
                 -ClientId $ClientId `
@@ -437,8 +459,8 @@ PROCESS {
         } #foreach sposite
     } #process
 }
-
-#Runs the full script with default params#Runs the full script with default params
+<#
+#Runs the full script with default params
 #Update the parameters with <> to reflect your environment
 Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
     -ClientId "<Your Entra App Id>" `
@@ -452,4 +474,6 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
     -IncludeSystemLists:$false `
     -GetItemPermissions `
     -GetItemDetails `
+    -IncludeOneDriveSites `
     -ClearPriorLogs
+ #>

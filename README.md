@@ -36,9 +36,9 @@ Before executing, update the lines below with your environment's parameters
 ``` PowerShell
 #Runs the full script with default params
 #Update the parameters with <> to reflect your environment
-Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
-    -ClientId "<Your Entra App Client Id>" `
-    -CertificatePath "<Path to your PFX file>" `
+Get-SPOFullDetails -ReportOutputPath "c:\temp\spinventory" `
+    -ClientId "<Your Entra App Id>" `
+    -CertificatePath "<Path to Your Certificate pfx>" `
     -Tenant "<Your tenant name>.onmicrosoft.com" `
     -SPOAdminUrl "https://<Your tenant name>-admin.sharepoint.com" `
     -GetWebDetails `
@@ -48,7 +48,29 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
     -IncludeSystemLists:$false `
     -GetItemPermissions `
     -GetItemDetails `
+    -IncludeOneDriveSites `
     -ClearPriorLogs
+```
+
+If you wish to only check specific sites, use the <i>-SiteLists</i> parameter, which is a list of URLs
+
+```PowerShell
+#Update the parameters with <> to reflect your environment
+Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
+    -ClientId "<Your Entra App Id>" `
+    -CertificatePath "<Path to Your Certificate>" `
+    -Tenant "<Your tenant name>.onmicrosoft.com" `
+    -SPOAdminUrl "https://<Your tenant name>-admin.sharepoint.com" `
+    -GetWebDetails `
+    -GetWebPermissions `
+    -GetListDetails `
+    -GetListPermissions `
+    -IncludeSystemLists:$false `
+    -GetItemPermissions `
+    -GetItemDetails `
+    -SiteList "https://<your tenant name>.sharepoint.com/sites/<your first site>","https://<your tenant name>.sharepoint.com/sites/<your second site>" `
+    -ClearPriorLogs
+
 ```
 ### Outputs
 
