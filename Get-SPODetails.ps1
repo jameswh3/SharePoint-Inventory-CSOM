@@ -334,7 +334,7 @@ Function Get-SPOSiteDetails {
         Connect-PnPOnline -Url $SiteUrl `
             -ClientId $ClientId `
             -Tenant $Tenant `
-            -CertificatePath $CertificatePath 
+            -CertificatePath $CertificatePath
         $SiteData = @()
         $Area="Site"
         $ReportOutput=($ReportOutputPath + "\"+$Area+"Details.csv")
@@ -453,6 +453,3 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
     -GetItemPermissions `
     -GetItemDetails `
     -ClearPriorLogs
-
-
-    

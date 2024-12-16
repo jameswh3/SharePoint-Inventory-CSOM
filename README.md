@@ -1,6 +1,6 @@
 # Overview
 
-This script is provided as a way to inventory SharePoint Sites, Webs, Lists, and Items and their permissions
+This script is provided as a way to inventory SharePoint Online Sites, Webs, Lists, and Items and their permissions
 
 # Script Reference
 
