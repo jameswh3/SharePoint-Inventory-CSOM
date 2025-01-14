@@ -459,7 +459,7 @@ PROCESS {
         } #foreach sposite
     } #process
 }
-<#
+
 #Runs the full script with default params
 #Update the parameters with <> to reflect your environment
 Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
@@ -476,4 +476,4 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
     -GetItemDetails `
     -IncludeOneDriveSites `
     -ClearPriorLogs
- #>
+ 
