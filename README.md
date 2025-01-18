@@ -1,6 +1,18 @@
 # Overview
 
-This script is provided as a way to inventory SharePoint Online Sites, Webs, Lists, and Items and their permissions
+This script is provided as a way to inventory SharePoint Online Sites, Webs, Lists, and Items and their permissions.
+
+## Table of Contents
+- [Overview](#overview)
+- [Script Reference](#script-reference)
+- [PowerShell Requirements](#powershell-requirements)
+- [Script Details](#script-details)
+  - [Permissions Required](#permissions-required)
+  - [Configuration](#configuration)
+  - [Parameters](#parameters)
+  - [Outputs](#outputs)
+- [Examples](#examples)
+- [Troubleshooting](#troubleshooting)
 
 # Script Reference
 
@@ -8,35 +20,34 @@ This script is provided as a way to inventory SharePoint Online Sites, Webs, Lis
 | --- | --- | --- | --- |
 | Get-SPODetails.ps1 | Iterates through Site Collections, Webs, Lists, and Items to gather information at each level | [Details](https://github.com/jameswh3/SharePoint-Inventory-CSOM/tree/main?tab=readme-ov-file#permissions-required) | PnP PowerShell
 
-
 # PowerShell Requirements
 
-*   [Windows PowerShell 7.0 or higher](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.4)
-*   [PnP.PowerShell module 2.99.74 or higher](https://pnp.github.io/powershell/articles/installation.html)
-*   [Entra ID Application Registered to use with PnP PowerShell](https://pnp.github.io/powershell/articles/registerapplication)
+* [Windows PowerShell 7.0 or higher](https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.4)
+* [PnP.PowerShell module 2.99.74 or higher](https://pnp.github.io/powershell/articles/installation.html)
+* [Entra ID Application Registered to use with PnP PowerShell](https://pnp.github.io/powershell/articles/registerapplication)
 
 # Script Details
 
 ## Get-SPODetails.ps1
 
-Iterates through Site Collections, Webs, Lists, and Items to gather inventory information at each level
+Iterates through Site Collections, Webs, Lists, and Items to gather inventory information at each level.
 
 ### Permissions Required
 
 | API | Type | Permission | Justification |
 | --- | --- | --- | --- |
 | SharePoint | Application | Sites.FullControl.All | Required to retrieve tenant site properties. |
-| Microsoft Graph | Application | Groups.ReadWrite.All | Required to retrieve M365 Group properties and associated endpoints. |
-| Microsoft Graph | Application | User.ReadWriteAll | Required to retrieve User Details from Graph |
+| Microsoft Graph | Application | Groups.ReadWrite.All | Required to retrieve M365 Group properties and associated endpoints. |
+| Microsoft Graph | Application | User.ReadWriteAll | Required to retrieve User Details from Graph |
 
 ### Configuration
 
-Before executing, update the lines below with your environment's parameters
+Before executing, update the lines below with your environment's parameters:
 
-``` PowerShell
-#Runs the full script with default params
-#Update the parameters with <> to reflect your environment
-Get-SPOFullDetails -ReportOutputPath "c:\temp\spinventory" `
+```PowerShell
+# Runs the full script with default params
+# Update the parameters with <> to reflect your environment
+Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
     -ClientId "<Your Entra App Id>" `
     -CertificatePath "<Path to Your Certificate pfx>" `
     -Tenant "<Your tenant name>.onmicrosoft.com" `
@@ -52,10 +63,10 @@ Get-SPOFullDetails -ReportOutputPath "c:\temp\spinventory" `
     -ClearPriorLogs
 ```
 
-If you wish to only check specific sites, use the <i>-SiteLists</i> parameter, which is a list of URLs
+If you wish to only check specific sites, use the `-SiteList` parameter, which is a list of URLs:
 
 ```PowerShell
-#Update the parameters with <> to reflect your environment
+# Update the parameters with <> to reflect your environment
 Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
     -ClientId "<Your Entra App Id>" `
     -CertificatePath "<Path to Your Certificate>" `
@@ -70,14 +81,34 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
     -GetItemDetails `
     -SiteList "https://<your tenant name>.sharepoint.com/sites/<your first site>","https://<your tenant name>.sharepoint.com/sites/<your second site>" `
     -ClearPriorLogs
-
 ```
+
+### Parameters
+
+| Parameter | Description |
+| --- | --- |
+| `-ReportOutputPath` | Path to save the output reports. |
+| `-ClientId` | Entra App ID for authentication. |
+| `-CertificatePath` | Path to the certificate file for authentication. |
+| `-Tenant` | Tenant name in the format `<tenant>.onmicrosoft.com`. |
+| `-SPOAdminUrl` | URL of the SharePoint Online Admin Center. |
+| `-GetWebDetails` | Include web details in the report. |
+| `-GetWebPermissions` | Include web permissions in the report. |
+| `-GetListDetails` | Include list details in the report. |
+| `-GetListPermissions` | Include list permissions in the report. |
+| `-IncludeSystemLists` | Include system lists in the report. |
+| `-GetItemPermissions` | Include item permissions in the report. |
+| `-GetItemDetails` | Include item details in the report. |
+| `-IncludeOneDriveSites` | Include OneDrive sites in the report. |
+| `-ClearPriorLogs` | Clear previous logs before running the script. |
+| `-SiteList` | List of specific site URLs to check. |
+
 ### Outputs
 
 #### ItemDetails
 
 | Field Name | Description |
-| --- | ---|
+| --- | --- |
 | Area | Area where script is running (e.g. Item) |
 | ItemId | Item Id |
 | SiteId | GUID of Site |
@@ -91,7 +122,7 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
 #### ItemPermissions
 
 | Field Name | Description |
-| --- | ---|
+| --- | --- |
 | Area | Area where script is running (e.g. Item) |
 | MemberName | Name of Principal |
 | MemberPrincipalType | Principal Type |
@@ -109,7 +140,7 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
 #### ListDetails
 
 | Field Name | Description |
-| --- | ---|
+| --- | --- |
 | Area | Area where script is running (e.g. Item) |
 | ListId | GUID of List |
 | ListTitle | List Title |
@@ -126,7 +157,7 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
 #### ListPermissions
 
 | Field Name | Description |
-| --- | ---|
+| --- | --- |
 | Area | Area where script is running (e.g. Item) |
 | MemberName | Name of Principal |
 | PrincipalType | Principal Type |
@@ -138,7 +169,7 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
 #### SiteDetails
 
 | Field Name | Description |
-| --- | ---|
+| --- | --- |
 | Area | Area where script is running (e.g. Item) |
 | SiteId | GUID of Site |
 | Url | Url of Site |
@@ -157,18 +188,17 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
 | IsRestrictContentOrgWideSearchPolicyEnforcedOnSite | Restricted Content Org Wide Search Policy Enforced |
 | DisableCompanyWideSharingLinks | Disable Company Sharing Links |
 
-
 #### WebDetails
 
 | Field Name | Description |
-| --- | ---|
-| Area | Area where script is running (e.g. Item)esc |
+| --- | --- |
+| Area | Area where script is running (e.g. Item) |
 | Url | Url of Web |
 | WebId | GUID of Web |
 | WebTitle | Title of Web |
 | SiteId | GUID of Site |
 | ParentWebId | GUID of Parent Web |
-| WebTemplate | Web Tempate |
+| WebTemplate | Web Template |
 | LastItemUserModifiedDate | Last Item User Modified Date |
 | LastItemModifiedDate | Last Item Modified Date |
 | HasUniqueRoleAssignments | Has Unique Role Assignments |
@@ -177,7 +207,7 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
 #### WebGroupDetail
 
 | Field Name | Description |
-| --- | ---|
+| --- | --- |
 | Area | Area where script is running (e.g. Item) |
 | WebId | GUID of Web |
 | SiteId | GUID of Site |
@@ -193,7 +223,7 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
 #### WebPermissions
 
 | Field Name | Description |
-| --- | ---|
+| --- | --- |
 | Area | Area where script is running (e.g. Item) |
 | MemberTitle | Principal Title |
 | MemberPrincipalType | Principal Type |
@@ -204,4 +234,57 @@ Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
 | SiteId | GUID of Site |
 | PermissionLevels | Permission Levels for the Principal at this Scope |
 
+# Examples
 
+## Full Inventory
+
+```PowerShell
+Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
+    -ClientId "<Your Entra App Id>" `
+    -CertificatePath "<Path to Your Certificate pfx>" `
+    -Tenant "<Your tenant name>.onmicrosoft.com" `
+    -SPOAdminUrl "https://<Your tenant name>-admin.sharepoint.com" `
+    -GetWebDetails `
+    -GetWebPermissions `
+    -GetListDetails `
+    -GetListPermissions `
+    -IncludeSystemLists:$false `
+    -GetItemPermissions `
+    -GetItemDetails `
+    -IncludeOneDriveSites `
+    -ClearPriorLogs
+```
+
+## Specific Sites
+
+```PowerShell
+Get-SPODetails -ReportOutputPath "c:\temp\spinventory" `
+    -ClientId "<Your Entra App Id>" `
+    -CertificatePath "<Path to Your Certificate>" `
+    -Tenant "<Your tenant name>.onmicrosoft.com" `
+    -SPOAdminUrl "https://<Your tenant name>-admin.sharepoint.com" `
+    -GetWebDetails `
+    -GetWebPermissions `
+    -GetListDetails `
+    -GetListPermissions `
+    -IncludeSystemLists:$false `
+    -GetItemPermissions `
+    -GetItemDetails `
+    -SiteList "https://<your tenant name>.sharepoint.com/sites/<your first site>","https://<your tenant name>.sharepoint.com/sites/<your second site>" `
+    -ClearPriorLogs
+```
+
+# Troubleshooting
+
+## Common Issues
+
+### Authentication Errors
+- Ensure that the Entra ID application is correctly registered and the certificate path is correct.
+- Verify that the ClientId and Tenant parameters are correctly set.
+
+### Permission Denied
+- Ensure that the required permissions are granted to the Entra ID application.
+
+### Output Files Not Generated
+- Check the `ReportOutputPath` to ensure it is correct and writable.
+- Verify that the script has the necessary permissions to write to the specified path.
